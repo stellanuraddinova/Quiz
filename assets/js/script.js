@@ -45,21 +45,21 @@ class Quiz {
         }else{
             console.log('Oyun Bitdi');
         }
+        nextQuestion.classList.add('hidden')
+        options.style.pointerEvents = 'initial';
         currentQuestion.innerHTML = this.index + 1;
         this.question = this.getQuestion();
         this.start();
     }
 
     checkVariant(variant){
-        const el = options.querySelectorAll(`[data-variant="${variant}"]`);
+        const el = options.querySelector(`[data-variant="${variant}"]`);
         options.style.pointerEvents = 'none';
         nextQuestion.classList.remove('hidden');
         if(this.question.current.toString().toLowerCase() === variant.toString().toLowerCase()){
-            // el.classList.add('bg-[#D4FFBA]')
-            console.log('duz');
+            el.classList.add('bg-[#D4FFBA]')
         }else{
-            // el.classList.add('bg-[#FFDEDE]')
-            console.log('sehv');
+            el.classList.add('bg-[#FFDEDE]')
         }
     }
     start () {

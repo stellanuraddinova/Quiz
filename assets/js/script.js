@@ -12,6 +12,8 @@ const wrongAnswer = document.querySelector("#wrongAnswer");
 const noneAnswer = document.querySelector("#noneAnswer");
 const quizContent = document.querySelector("#quizContent");
 const answerContent = document.querySelector("#answerContent");
+const quizElement = document.querySelector("#quiz");
+const start = document.querySelector("#start");
 
 String.prototype.toHtmlEntities = function () {
   return this.replace(/./gm, function (s) {
@@ -75,8 +77,8 @@ class Quiz {
   checkVariant(variant, noneCheck = false) {
     const el = options.querySelector(`[data-variant="${variant}"]`);
     options.style.pointerEvents = "none";
-    if (this.index +1 < this.questions.length){
-        nextQuestion.classList.remove("hidden");
+    if (this.index + 1 < this.questions.length) {
+      nextQuestion.classList.remove("hidden");
     }
 
     if (
@@ -84,7 +86,7 @@ class Quiz {
       variant.toString().toLowerCase()
     ) {
       el.classList.add("bg-[#D4FFBA]");
-      if (!noneCheck){
+      if (!noneCheck) {
         this.answer.success += 1;
       }
     } else {
@@ -95,9 +97,8 @@ class Quiz {
       );
       success.classList.add("bg-[#D4FFBA]");
     }
-    if(this.index === this.questions.length - 1){
-        this.finish();
-
+    if (this.index === this.questions.length - 1) {
+      this.finish();
     }
   }
   startTime(time) {
@@ -140,24 +141,24 @@ class Quiz {
         this.question.options[option]
       );
     }
-
-    ;
   }
 
-  finish (){
-    quizContent.classList.add('hidden');
-    answerContent.classList.remove('hidden');
+  finish() {
+    quizContent.classList.add("hidden");
+    answerContent.classList.remove("hidden");
     successAnswer.textContent = this.answer.success;
     wrongAnswer.textContent = this.answer.wrong;
     noneAnswer.textContent = this.answer.none;
   }
 }
 
-const quiz = new Quiz(questions);
+start.addEventListener("click", (e) => {
+  const quiz = new Quiz(questions); 
+  e.target.parentElement.classList.add('hidden')
+  quizElement.classList.remove('hidden')
+  quiz.start();
 
-quiz.start();
-
-options.addEventListener("click", (e) => {
+  options.addEventListener("click", (e) => {
     const variant = e.target.getAttribute("data-variant");
 
     if (variant) {
@@ -165,4 +166,5 @@ options.addEventListener("click", (e) => {
       clearInterval(lineBarInterval);
       quiz.checkVariant(variant);
     }
-  })
+  });
+});

@@ -20,14 +20,14 @@
 </head>
 
 <body>
-    <div class="fixed inset-0 bg-white flex justify-center items-center hidden">
-        <button class="h-[50px] px-[28px] bg-[#FFA722]  font-semibold text-white rounded-lg">
+    <div class="fixed inset-0 bg-white flex justify-center items-center">
+        <button id="start" class="h-[50px] px-[28px] bg-[#FFA722]  font-semibold text-white rounded-lg">
             Start
         </button>
 
     </div>
 
-    <div class="w-[600px] border mx-auto my-[50px] rounded-lg border-[#a7a7a7] overflow-hidden">
+    <div id="quiz" class="w-[600px] border mx-auto my-[50px] rounded-lg border-[#a7a7a7] overflow-hidden hidden">
         <div  id="quizContent">
             <div class="h-[50px] flex justify-between items-center bg-[#f0f0f0] py-[6px] px-[14px] border-b-[1px] border-[#a7a7a7] relative">
                 <span class="text-[18px] font-semibold">Quiz App</span>
@@ -62,6 +62,7 @@
                 <p><b>Düzgün cavabların sayı: </b><span id="successAnswer"></span> </p> 
                 <p><b>Səhv cavabların sayı: </b><span id="wrongAnswer"></span> </p> 
                 <p><b>Cavablanmayan sualların sayı: </b><span id="noneAnswer"></span> </p> 
+                
             </div>
         </div>
     </div>

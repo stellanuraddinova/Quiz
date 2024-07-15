@@ -14,6 +14,7 @@ const quizContent = document.querySelector("#quizContent");
 const answerContent = document.querySelector("#answerContent");
 const quizElement = document.querySelector("#quiz");
 const start = document.querySelector("#start");
+const refresh = document.querySelector("#refresh");
 
 String.prototype.toHtmlEntities = function () {
   return this.replace(/./gm, function (s) {
@@ -152,10 +153,28 @@ class Quiz {
   }
 }
 
+
 start.addEventListener("click", (e) => {
-  const quiz = new Quiz(questions); 
-  e.target.parentElement.classList.add('hidden')
-  quizElement.classList.remove('hidden')
+  e.target.parentElement.classList.add("hidden");
+  quizElement.classList.remove("hidden");
+
+  const quiz = new Quiz(questions);
+  quiz.start();
+
+  options.addEventListener("click", (e) => {
+    const variant = e.target.getAttribute("data-variant");
+
+    if (variant) {
+      clearInterval(startTimeInterval);
+      clearInterval(lineBarInterval);
+      quiz.checkVariant(variant);
+    }
+  });
+});
+refresh.addEventListener("click", (e) => {
+  answerContent.classList.add("hidden");
+  quizContent.classList.remove("hidden");
+  const quiz = new Quiz(questions);
   quiz.start();
 
   options.addEventListener("click", (e) => {

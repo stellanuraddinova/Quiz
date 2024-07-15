@@ -7,6 +7,11 @@ const nextQuestion = document.querySelector("#nextQuestion");
 const currentQuestion = document.querySelector("#currentQuestion");
 const totalQuestion = document.querySelector("#totalQuestion");
 const lineBar = document.querySelector("#lineBar");
+const successAnswer = document.querySelector("#successAnswer");
+const wrongAnswer = document.querySelector("#wrongAnswer");
+const noneAnswer = document.querySelector("#noneAnswer");
+const quizContent = document.querySelector("#quizContent");
+const answerContent = document.querySelector("#answerContent");
 
 String.prototype.toHtmlEntities = function () {
   return this.replace(/./gm, function (s) {
@@ -21,6 +26,12 @@ class Quiz {
   constructor(questions) {
     this.questions = questions;
     this.index = 0;
+    this.answer = {
+      success: 0,
+      wrong: 0,
+      none: 0,
+    };
+
     this.question = this.getQuestion();
 
     totalQuestion.innerHTML = this.questions.length;
@@ -28,6 +39,9 @@ class Quiz {
 
     nextQuestion.addEventListener("click", () => {
       this.nextQuestion();
+      this.start();
+      this.startTime(10);
+      this.startLineBar(0);
     });
 
     this.startTime(10);
@@ -50,30 +64,40 @@ class Quiz {
     if (this.index < this.questions.length - 1) {
       this.index++;
     } else {
-      console.log("Oyun Bitdi");
+      this.finish();
     }
     nextQuestion.classList.add("hidden");
     options.style.pointerEvents = "initial";
     currentQuestion.innerHTML = this.index + 1;
     this.question = this.getQuestion();
-    this.start();
-    this.startTime(10);
-    this.startLineBar(0);
   }
 
-  checkVariant(variant) {
+  checkVariant(variant, noneCheck = false) {
     const el = options.querySelector(`[data-variant="${variant}"]`);
     options.style.pointerEvents = "none";
-    nextQuestion.classList.remove("hidden");
+    if (this.index +1 < this.questions.length){
+        nextQuestion.classList.remove("hidden");
+    }
+
     if (
       this.question.current.toString().toLowerCase() ===
       variant.toString().toLowerCase()
     ) {
       el.classList.add("bg-[#D4FFBA]");
+      if (!noneCheck){
+        this.answer.success += 1;
+      }
     } else {
       el.classList.add("bg-[#FFDEDE]");
-      const success = options.querySelector(`[data-variant="${this.question.current}"]`);   
+      this.answer.wrong += 1;
+      const success = options.querySelector(
+        `[data-variant="${this.question.current}"]`
+      );
       success.classList.add("bg-[#D4FFBA]");
+    }
+    if(this.index === this.questions.length - 1){
+        this.finish();
+
     }
   }
   startTime(time) {
@@ -87,18 +111,18 @@ class Quiz {
       timeContent.textContent = time;
 
       if (time < 1) {
+        obj.answer.none += 1;
         clearInterval(startTimeInterval);
-        obj.checkVariant(obj.question.current);
+        obj.checkVariant(obj.question.current, true);
       }
     }
   }
 
   startLineBar(width) {
     lineBarInterval = setInterval(timer, 100);
-    const obj = this;
     function timer() {
       width += 1;
-      lineBar.style.width = width + '%';
+      lineBar.style.width = width + "%";
 
       if (width === 100) {
         clearInterval(lineBarInterval);
@@ -117,18 +141,28 @@ class Quiz {
       );
     }
 
-    options.addEventListener("click", (e) => {
-      const variant = e.target.getAttribute("data-variant");
+    ;
+  }
 
-      if (variant) {
-        clearInterval(startTimeInterval);
-        clearInterval(lineBarInterval);
-        this.checkVariant(variant);
-      }
-    });
+  finish (){
+    quizContent.classList.add('hidden');
+    answerContent.classList.remove('hidden');
+    successAnswer.textContent = this.answer.success;
+    wrongAnswer.textContent = this.answer.wrong;
+    noneAnswer.textContent = this.answer.none;
   }
 }
 
 const quiz = new Quiz(questions);
 
 quiz.start();
+
+options.addEventListener("click", (e) => {
+    const variant = e.target.getAttribute("data-variant");
+
+    if (variant) {
+      clearInterval(startTimeInterval);
+      clearInterval(lineBarInterval);
+      quiz.checkVariant(variant);
+    }
+  })
